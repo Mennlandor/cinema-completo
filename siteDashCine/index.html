@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Painel de gerenciamento do cinema.">
+    <title>Painel C!NEMA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <a class="brand" href="index.html">C!NEMA <span>Dashboard</span></a>
+            <p class="sidebar-label">Gerenciamento</p>
+            <nav aria-label="Gerenciamento">
+                <button class="nav-button active" type="button" data-page="inicio">Visão geral</button>
+                <button class="nav-button" type="button" data-page="filmes">Filmes</button>
+                <button class="nav-button" type="button" data-page="sessoes">Sessões e preços</button>
+                <button class="nav-button" type="button" data-page="vendas">Vendas</button>
+            </nav>
+            <a class="back-link" href="../cinemaWebsite/index.html">Voltar ao site</a>
+        </aside>
+
+        <div class="workspace">
+            <header class="topbar">
+                <div>
+                    <h1 id="page-title">Visão geral</h1>
+                </div>
+                <button id="refresh-button" class="secondary-button" type="button">Atualizar dados</button>
+            </header>
+            <main id="content" class="content" aria-live="polite"></main>
+        </div>
+    </div>
+    <script src="script.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Detalhes do filme selecionado no C!NEMA.">
+    <title>Filme | C!NEMA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="index.html" aria-label="C!NEMA, página inicial"><img src="imagens/cinema-logo.png" alt=""></a>
+        <nav aria-label="Navegação principal">
+            <a class="nav-link active" href="index.html">Filmes</a>
+            <a class="nav-link" href="index.html#about">Sobre</a>
+        </nav>
+    </header>
+    <main class="detail-page">
+        <a class="back-link" href="index.html">&larr; Voltar aos filmes</a>
+        <section id="movie-details" class="movie-details" aria-live="polite">
+            <div id="movie-poster" class="detail-poster"></div>
+            <div class="detail-content">
+                <h1 id="movie-title"></h1>
+                <p id="movie-genre" class="detail-genre"></p>
+                <p class="detail-text">Uma história para curtir na tela grande. Consulte a programação do seu cinema.</p>
+                <button id="open-sale-dialog" class="ticket-notice" type="button">
+                    Escolher sessão
+                </button>
+            </div>
+        </section>
+        <p id="error-message" class="error-message" hidden></p>
+    </main>
+    <dialog id="sale-dialog" class="sale-dialog" aria-labelledby="sale-title">
+        <div class="sale-dialog-heading">
+            <h2 id="sale-title">Escolha uma sessão</h2>
+            <button id="close-sale-dialog" class="sale-close-button" type="button" aria-label="Fechar">×</button>
+        </div>
+        <div id="sessions-container" class="sessions-container" aria-live="polite">
+            <p>Carregando sessões...</p>
+        </div>
+        <p id="sale-message" class="sale-message" role="status" aria-live="polite" hidden></p>
+        <form id="sale-form" hidden>
+            <button id="back-to-sessions" class="sale-back-button" type="button">← Escolher outra sessão</button>
+            <div id="sale-session-details" class="sale-session-details"></div>
+            <label class="sale-quantity" for="sale-quantity">
+                Quantidade de ingressos
+                <input id="sale-quantity" name="quantidade" type="number" min="1" step="1" value="1" required>
+            </label>
+            <p class="sale-total">Total: <strong id="sale-total"></strong></p>
+            <button id="sale-confirm" class="sale-confirm-button" type="submit">Confirmar compra</button>
+        </form>
+    </dialog>
+    <script src="filmes.js"></script>
+</body>
+</html>
