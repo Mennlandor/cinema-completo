@@ -102,7 +102,7 @@ async function carregarFilme() {
 
         // Busca o filme
         const respostaFilme = await fetch(
-            `${API_URL}/Filme/${movieId}`
+            `${API_URL}/api/Filme/${movieId}`
         );
 
         if (!respostaFilme.ok) {
@@ -242,7 +242,7 @@ async function carregarSessoes() {
         }
 
         const response = await fetch(
-            `${API_URL}/Sessao/filme/${movieId}`
+            `${API_URL}/api/Sessao/filme/${movieId}`
         );
 
         if (!response.ok) {
