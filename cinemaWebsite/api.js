@@ -1,5 +1,5 @@
 
-const API_URL = "http://localhost:5172/api";
+const API_URL = "https://cinema-api-hs2h.onrender.com";
 
 async function buscarFilmes() {
     const resposta = await fetch(`${API_URL}/Filme`);
