@@ -130,7 +130,7 @@ async function carregarFilme() {
 
         // Busca categorias
         const respostaCategorias = await fetch(
-            `${API_URL}/CategoriaFilme/${movieId}`
+            `${API_URL}/api/CategoriaFilme/${movieId}`
         );
 
         let categorias = [];
@@ -510,7 +510,7 @@ saleForm.addEventListener("submit", async event => {
     saleMessage.hidden = true;
 
     try {
-        const response = await fetch(`${API_URL}/Venda`, {
+        const response = await fetch(`${API_URL}/api/Venda`, {
             method: "POST",
 
             headers: {
