@@ -1,4 +1,4 @@
-const API_URL = "https://cinema-api-hs2h.onrender.com";
+const API_URL = "https://cinema-api-hs2h.onrender.com/api";
 const content = document.querySelector("#content");
 const pageTitle = document.querySelector("#page-title");
 const navigationButtons = document.querySelectorAll("[data-page]");
