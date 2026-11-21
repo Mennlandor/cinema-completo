@@ -37,13 +37,19 @@ let cachedMovies = [];
 let cachedRooms = [];
 let cachedSessions = [];
 
+
 async function apiRequest(path, options = {}) {
+    const headers = {
+        ...options.headers
+    };
+
+    if (options.body && !(options.body instanceof FormData)) {
+        headers["Content-Type"] = "application/json";
+    }
+
     const response = await fetch(`${API_URL}${path}`, {
         ...options,
-        headers: {
-            ...(options.body ? { "Content-Type": "application/json" } : {}),
-            ...options.headers
-        }
+        headers
     });
 
     const text = await response.text();
@@ -318,19 +324,35 @@ function buildMovieForm(movie = null) {
     duration.value = movie?.duracao ?? "";
     const release = makeTextInput("date", "dataLancamento", { required: true });
     release.value = movie?.dataLancamento?.slice(0, 10) || "";
-    const poster = makeTextInput("url", "posterUrl", { required: true });
-    poster.value = movie?.posterUrl || "";
+    const poster = makeTextInput("file", "poster");
+    poster.accept = "image/jpeg,image/png,image/webp";
+
+    // No cadastro, a imagem é obrigatória.
+    // Na edição, só enviamos outra imagem se o usuário escolher.
+    poster.required = !movie;
     const classification = selectOptions(classifications, movie?.classificacao ?? 0);
     const status = selectOptions(movieStatuses, movie?.status ?? 0);
     const synopsis = document.createElement("textarea");
     synopsis.name = "sinopse";
     synopsis.value = movie?.sinopse || "";
 
+    const posterField = makeField("Imagem do pôster", "poster", poster, true);
+
+    if (movie) {
+        posterField.append(
+            makeElement(
+                "small",
+                "muted",
+                `Imagem atual: ${movie.posterUrl || "Nenhuma imagem cadastrada"}. Selecione outra somente se quiser substituir.`
+            )
+        );
+    }
+
     grid.append(
         makeField("Título", "titulo", title),
         makeField("Duração (minutos)", "duracao", duration),
         makeField("Data de lançamento", "dataLancamento", release),
-        makeField("URL do pôster", "posterUrl", poster, true),
+        posterField,
         makeField("Classificação", "classificacao", classification),
         makeField("Status", "status", status),
         makeField("Sinopse", "sinopse", synopsis, true)
@@ -395,31 +417,69 @@ async function renderMovies(editId = null, successMessage = "") {
     ));
 }
 
+
 async function saveMovie(event) {
     event.preventDefault();
+
     const form = event.currentTarget;
     const data = new FormData(form);
-    const body = {
-        titulo: String(data.get("titulo")).trim(),
-        sinopse: String(data.get("sinopse")).trim(),
-        duracao: Number(data.get("duracao")),
-        classificacao: Number(data.get("classificacao")),
-        dataLancamento: data.get("dataLancamento"),
-        posterUrl: String(data.get("posterUrl")).trim() || "",
-        status: Number(data.get("status"))
-    };
 
     try {
         const id = form.dataset.id;
+
+        // Mantém a imagem anterior durante uma edição
+        let posterUrl = cachedMovies.find(
+            movie => String(movie.id) === String(id)
+        )?.posterUrl || "";
+
+        const posterFile = data.get("poster");
+
+        // Se uma imagem foi selecionada, faz o upload primeiro
+        if (posterFile instanceof File && posterFile.size > 0) {
+            const imageData = new FormData();
+
+            imageData.append("arquivo", posterFile);
+
+            const uploadResult = await apiRequest("/Filme/upload-poster", {
+                method: "POST",
+                body: imageData
+            });
+
+            posterUrl = uploadResult.nomeArquivo;
+        }
+
+        // Impede cadastro sem imagem
+        if (!posterUrl) {
+            throw new Error("Selecione uma imagem para o pôster.");
+        }
+
+        // Monta os dados do filme
+        const body = {
+            titulo: String(data.get("titulo")).trim(),
+            sinopse: String(data.get("sinopse")).trim(),
+            duracao: Number(data.get("duracao")),
+            classificacao: Number(data.get("classificacao")),
+            dataLancamento: data.get("dataLancamento"),
+            posterUrl: posterUrl,
+            status: Number(data.get("status"))
+        };
+
+        // Cadastra ou atualiza o filme
         await apiRequest(id ? `/Filme/${id}` : "/Filme", {
             method: id ? "PUT" : "POST",
             body: JSON.stringify(body)
         });
-        await renderMovies(null, id ? "Filme atualizado." : "Filme cadastrado.");
+
+        await renderMovies(
+            null,
+            id ? "Filme atualizado." : "Filme cadastrado."
+        );
+
     } catch (error) {
         showNotice(error.message, "error");
     }
 }
+
 
 async function deleteMovie(movie) {
     if (!window.confirm(`Excluir "${movie.titulo}"? A API pode impedir a exclusão se houver sessões vinculadas.`)) return;
