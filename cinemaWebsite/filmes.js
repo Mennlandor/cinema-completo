@@ -156,7 +156,7 @@ async function carregarFilme() {
         if (filme.posterUrl) {
             const posterImage = document.createElement("img");
 
-            posterImage.src = filme.posterUrl;
+            posterImage.src = `${API_URL}/imagens/${filme.posterUrl}`;
             posterImage.alt = `Cartaz de ${filme.titulo}`;
 
             posterImage.addEventListener("error", () => {

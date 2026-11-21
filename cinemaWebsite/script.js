@@ -11,6 +11,7 @@ const STATUS_FILME = {
 };
 
 // Cria a imagem do poster
+
 function criarPoster(movie, classe) {
     const poster = document.createElement("div");
     poster.className = classe;
@@ -18,7 +19,7 @@ function criarPoster(movie, classe) {
     if (movie.posterUrl) {
         const posterImage = document.createElement("img");
 
-        posterImage.src = movie.posterUrl;
+        posterImage.src = `${API_URL}/imagens/${movie.posterUrl}`;
         posterImage.alt = `Cartaz de ${movie.titulo}`;
         posterImage.loading = "lazy";
 
@@ -31,6 +32,7 @@ function criarPoster(movie, classe) {
 
     return poster;
 }
+
 
 // Cria a identificação "Em breve"
 function criarIndicacaoStatus(movie) {
